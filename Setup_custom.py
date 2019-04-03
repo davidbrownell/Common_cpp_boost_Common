@@ -96,7 +96,14 @@ def GetDependencies():
 
     return Configuration(
         "Boost repository common to specific versions of boost",
-        [Dependency("0EAA1DCF22804F90AD9F5A3B85A5D706", "Common_Environment", "python36", "https://github.com/davidbrownell/Common_Environment_v3.git")],
+        [
+            Dependency(
+                "398F6BEC057C4FE4B724153DF4EB8AE4",
+                "Common_cpp_Helpers",
+                "Standard",
+                "https://github.com/davidbrownell/Common_cpp_Helpers.git",
+            ),
+        ],
     )
 
 
