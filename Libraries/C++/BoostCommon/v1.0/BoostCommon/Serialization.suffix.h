@@ -62,7 +62,7 @@ template <typename T>
 constexpr bool const HasSerializationPOD = has_SerializationPOD<T> && IsSerializationPOD<T> == false;
 
 template <typename T>
-constexpr bool const HasStandardSerializationMethods = HasSerializationPOD;
+constexpr bool const HasStandardSerializationMethods = HasSerializationPOD<T>;
 
 template <typename T>
 constexpr bool const HasPolymorphicSerializationMethods = std::is_same_v<std::true_type, decltype(HasPolymorphicSerializationMethodsImpl<T>(nullptr))>;

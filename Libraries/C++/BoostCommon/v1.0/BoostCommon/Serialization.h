@@ -186,7 +186,12 @@ namespace Serialization {
 #define SERIALIZATION_Impl_Delay(x)         BOOST_PP_CAT(x, SERIALIZATION_Impl_Empty())
 #define SERIALIZATION_Impl_Empty()
 
-#define SERIALIZATION_Impl2(Name, HasMembers, Members, HasBases, Bases, Flags)  SERIALIZATION_Impl2_Delay(SERIALIZATION_PreInvoke) BOOST_PP_LPAREN() Name, HasMembers, Members, HasBases, Bases, BOOST_PP_TUPLE_ENUM(Flags) BOOST_PP_RPAREN()
+#if (defined _MSC_VER && !defined __clang__)
+    // MSVC doesn't like BOOST_PP_EXPAND
+#   define SERIALIZATION_Impl2(Name, HasMembers, Members, HasBases, Bases, Flags)   SERIALIZATION_PreInvoke BOOST_PP_LPAREN() Name BOOST_PP_COMMA() HasMembers BOOST_PP_COMMA() Members BOOST_PP_COMMA() HasBases BOOST_PP_COMMA() Bases BOOST_PP_COMMA() BOOST_PP_TUPLE_ENUM(Flags) BOOST_PP_RPAREN()
+#else
+#   define SERIALIZATION_Impl2(Name, HasMembers, Members, HasBases, Bases, Flags)   BOOST_PP_EXPAND(SERIALIZATION_PreInvoke BOOST_PP_LPAREN() Name BOOST_PP_COMMA() HasMembers BOOST_PP_COMMA() Members BOOST_PP_COMMA() HasBases BOOST_PP_COMMA() Bases BOOST_PP_COMMA() BOOST_PP_TUPLE_ENUM(Flags) BOOST_PP_RPAREN())
+#endif
 
 #define SERIALIZATION_Impl2_Delay(x)        BOOST_PP_CAT(x, SERIALIZATION_Impl2_Empty())
 #define SERIALIZATION_Impl2_Empty()
@@ -444,8 +449,8 @@ namespace Serialization {
 #define SERIALIZATION_Invoke_PtrMethods_Regster_Concrete(Name, PolymorphicBaseName)     \
     {                                                                                   \
         boost::serialization::void_cast_register(                                       \
-            reinterpret_cast<Name const *>(nullptr),                                    \
-            reinterpret_cast<PolymorphicBaseName const *>(nullptr)                      \
+            static_cast<Name const *>(nullptr),                                         \
+            static_cast<PolymorphicBaseName const *>(nullptr)                           \
         );                                                                              \
     }
 
