@@ -290,10 +290,7 @@ struct Derived2Obj : public AbstractObj {
     virtual void Method2(void) const override {}
 };
 
-SERIALIZATION_POLYMORPHIC_DECLARE(Derived2Obj);
-SERIALIZATION_POLYMORPHIC_DEFINE(Derived2Obj);
-
-boost::serialization::void_cast_detail::void_caster_virtual_base<Derived1Obj, BaseObj> const & boost::serialization::singleton<boost::serialization::void_cast_detail::void_caster_virtual_base<Derived1Obj, BaseObj>>::get_const_instance();
+SERIALIZATION_POLYMORPHIC_DECLARE_AND_DEFINE(Derived2Obj);
 
 TEST_CASE("Polymorphic") {
     PtrTestImpl<BaseObj>(Derived1Obj(10, true, 'c'));
