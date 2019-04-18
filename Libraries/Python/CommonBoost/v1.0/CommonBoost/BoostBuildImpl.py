@@ -64,15 +64,21 @@ def CreateBuild(boost_root, is_standard_configuration):
 
                         with CallOnExit(lambda: os.chdir(prev_dir)):
                             if CurrentShell.CategoryName == "Windows":
-                                prefix = ""
-                                suffix = ".bat"
-                            else:
-                                prefix = "./"
-                                suffix = ".sh"
+                                command_line = "bootstrap.bat"
 
-                            build_dm.result, output = Process.Execute(
-                                "{}bootstrap{}".format(prefix, suffix),
-                            )
+                            else:
+                                bootstrap_name = "bootstrap.sh"
+
+                                build_dm.result, output = Process.Execute(
+                                    'chmod u+x "{}"'.format(bootstrap_name),
+                                )
+                                if build_dm.result != 0:
+                                    build_dm.stream.write(output)
+                                    return build_dm.result
+
+                                command_line = "./{}".format(bootstrap_name)
+
+                            build_dm.result, output = Process.Execute(command_line)
                             if build_dm.result != 0:
                                 build_dm.stream.write(output)
                                 return build_dm.result
@@ -84,7 +90,7 @@ def CreateBuild(boost_root, is_standard_configuration):
                 os.chdir(boost_root)
 
                 with CallOnExit(lambda: os.chdir(prev_dir)):
-                    command_line = 'b2 --build-type=complete stage{architecture} --with-serialization'.format(
+                    command_line = "b2 --build-type=complete stage{architecture} --with-serialization".format(
                         architecture=" address-model=64" if os.getenv(
                             "DEVELOPMENT_ENVIRONMENT_CPP_ARCHITECTURE",
                         ) == "x64" else "",
