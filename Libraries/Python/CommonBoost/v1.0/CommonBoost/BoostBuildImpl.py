@@ -64,12 +64,14 @@ def CreateBuild(boost_root, is_standard_configuration):
 
                         with CallOnExit(lambda: os.chdir(prev_dir)):
                             if CurrentShell.CategoryName == "Windows":
-                                bootstrap_ext = ".bat"
+                                prefix = ""
+                                suffix = ".bat"
                             else:
-                                bootstrap_ext = ".sh"
+                                prefix = "./"
+                                suffix = ".sh"
 
                             build_dm.result, output = Process.Execute(
-                                "bootstrap{}".format(bootstrap_ext),
+                                "{}bootstrap{}".format(prefix, suffix),
                             )
                             if build_dm.result != 0:
                                 build_dm.stream.write(output)
