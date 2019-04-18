@@ -76,23 +76,13 @@ def CreateBuild(boost_root, is_standard_configuration):
                                 return build_dm.result
 
             # Build boost (if necessary)
-            stage_dir = os.path.join(boost_root, "stage")
-            if os.path.isdir(stage_dir):
-                dm.stream.write(
-                    "Boost has already been built. Please run 'Clean' to build it again.\n",
-                )
-                return dm.result
-
-            temp_dir = CurrentShell.CreateTempDirectory()
-
             dm.stream.write("Building boost...")
             with dm.stream.DoneManager() as build_dm:
                 prev_dir = os.getcwd()
                 os.chdir(boost_root)
 
                 with CallOnExit(lambda: os.chdir(prev_dir)):
-                    command_line = 'b2 --build-type=complete stage "--stagedir={temp_dir}"{architecture} --with-serialization'.format(
-                        temp_dir=temp_dir,
+                    command_line = 'b2 --build-type=complete stage{architecture} --with-serialization'.format(
                         architecture=" address-model=64" if os.getenv(
                             "DEVELOPMENT_ENVIRONMENT_CPP_ARCHITECTURE",
                         ) == "x64" else "",
@@ -101,8 +91,6 @@ def CreateBuild(boost_root, is_standard_configuration):
                     build_dm.result = Process.Execute(command_line, build_dm.stream)
                     if build_dm.result != 0:
                         return build_dm.result
-
-                    os.rename(temp_dir, stage_dir)
 
             return dm.result
 
