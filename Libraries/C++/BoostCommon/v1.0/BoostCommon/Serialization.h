@@ -26,7 +26,7 @@
 
 #include <boost/iostreams/device/null.hpp>
 #include <boost/iostreams/filter/counter.hpp>
-#include <boost/iostreams/filtering_streambuf.hpp>
+#include <boost/iostreams/filtering_stream.hpp>
 
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/export.hpp>
@@ -277,7 +277,7 @@ namespace Serialization {
                                                                                                                         \
     template <typename ArchiveT>                                                                                        \
     size_t GetSerializedSize(void) const {                                                                              \
-        boost::iostreams::filtering_ostreambuf          out(boost::iostreams::counter() | boost::iostreams::null_sink());   \
+        boost::iostreams::filtering_ostream out(boost::iostreams::counter() | boost::iostreams::null_sink());           \
                                                                                                                         \
         Serialize<ArchiveT>(out);                                                                                       \
         out.flush();                                                                                                    \
@@ -385,7 +385,7 @@ namespace Serialization {
                                                                                                                                                                         \
     template <typename ArchiveT>                                                                                                                                        \
     size_t GetSerializedPtrSize(void) const {                                                                                                                           \
-        boost::iostreams::filtering_ostreambuf          out(boost::iostreams::counter() | boost::iostreams::null_sink());                                               \
+        boost::iostreams::filtering_ostream             out(boost::iostreams::counter() | boost::iostreams::null_sink());                                               \
                                                                                                                                                                         \
         SerializePtr<ArchiveT>(out);                                                                                                                                    \
         out.flush();                                                                                                                                                    \
