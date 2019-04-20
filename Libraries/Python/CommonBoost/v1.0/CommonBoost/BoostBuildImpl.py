@@ -33,6 +33,12 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 # ----------------------------------------------------------------------
 def CreateBuild(boost_root, is_standard_configuration):
+    boost_libs = [
+        "iostreams",
+        "regex",
+        "serialization",
+    ]
+
     # ----------------------------------------------------------------------
     @CommandLine.EntryPoint
     @CommandLine.Constraints(
@@ -89,11 +95,12 @@ def CreateBuild(boost_root, is_standard_configuration):
                 prev_dir = os.getcwd()
                 os.chdir(boost_root)
 
+                architecture = os.getenv("DEVELOPMENT_ENVIRONMENT_CPP_ARCHITECTURE")
+
                 with CallOnExit(lambda: os.chdir(prev_dir)):
-                    command_line = "b2 --build-type=complete stage{architecture} --with-serialization".format(
-                        architecture=" address-model=64" if os.getenv(
-                            "DEVELOPMENT_ENVIRONMENT_CPP_ARCHITECTURE",
-                        ) == "x64" else "",
+                    command_line = "b2 --build-type=complete --build-dir=build/{architecture} stage address-model={architecture} {libs}".format(
+                        architecture="64" if architecture == "x64" else "32",
+                        libs=" ".join(["--with-{}".format(lib_name) for lib_name in boost_libs]),
                     )
 
                     build_dm.result = Process.Execute(command_line, build_dm.stream)
