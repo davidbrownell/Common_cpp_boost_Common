@@ -48,7 +48,7 @@ namespace Serialization {
 
 /////////////////////////////////////////////////////////////////////////
 ///  \def           SERIALIZATION
-///  \brief         Implements Seriialize and Deserialize methods while still
+///  \brief         Implements Serialize and Deserialize methods while still
 ///                 maintaining correct-by-construction semantics (traditional
 ///                 serialization requires objects that are default constructible).
 ///
@@ -429,7 +429,7 @@ namespace Serialization {
                                                                                                                                                                         \
         return DeserializePtr(ar, tag);                                                                                                                                 \
     }
-    
+
 #define SERIALIZATION_Invoke_PtrMethods_Create_Abstract(Name, PolymorphicBaseName)      = 0;
 
 #define SERIALIZATION_Invoke_PtrMethods_Create_NotAbstract(Name, PolymorphicBaseName)                           \
@@ -766,7 +766,7 @@ void SERIALIZATION_Impl_Func_Name()(void);
 ///
 struct DelayInitTag {};
 
-// has_SerializationPOD is used in Seralization.suffix.h.
+// has_SerializationPOD is used in Serialization.suffix.h.
 CREATE_HAS_TYPE_CHECKER(SerializationPOD);
 
 // ----------------------------------------------------------------------
@@ -884,7 +884,7 @@ using DeserializeDataType                   = typename DeserializeDataTypeImpl<s
 ///  \function      ScrubSerializationName
 ///  \brief         The name used when serializing name-value pairs must be
 ///                 alphanumeric, but the names passed as auto-generated tags
-///                 may have puncuation chars (for example when the name is
+///                 may have punctuation chars (for example when the name is
 ///                 part of a namespace). This method will return the first
 ///                 alphanumeric char after the last non-alphanumeric char.
 ///
