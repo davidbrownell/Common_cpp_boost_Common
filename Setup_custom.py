@@ -94,7 +94,9 @@ def GetDependencies():
     (aka is configurable) or a single Configuration if not.
     """
 
-    return Configuration(
+    d = OrderedDict()
+
+    d["standard"] = Configuration(
         "Boost repository common to specific versions of boost",
         [
             Dependency(
@@ -106,13 +108,27 @@ def GetDependencies():
         ],
     )
 
+    d["no_helpers"] = Configuration(
+        "Boost repository common to specific versions of boost (without a dependency on Common_cpp_Helpers)",
+        [
+            Dependency(
+                "0EAA1DCF22804F90AD9F5A3B85A5D706",
+                "Common_Environment",
+                "python36",
+                "https://github.com/davidbrownell/Common_Environment_v3.git"
+            ),
+        ],
+    )
+
+    return d
+
 
 # ----------------------------------------------------------------------
 def GetCustomActions(debug, verbose, explicit_configurations):
     """
     Returns an action or list of actions that should be invoked as part of the setup process.
 
-    Actions are generic command line statements defined in 
+    Actions are generic command line statements defined in
     <Common_Environment>/Libraries/Python/CommonEnvironment/v1.0/CommonEnvironment/Shell/Commands/__init__.py
     that are converted into statements appropriate for the current scripting language (in most
     cases, this is Bash on Linux systems and Batch or PowerShell on Windows systems.
