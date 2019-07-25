@@ -94,33 +94,17 @@ def GetDependencies():
     (aka is configurable) or a single Configuration if not.
     """
 
-    d = OrderedDict()
-
-    d["standard"] = Configuration(
+    return Configuration(
         "Boost repository common to specific versions of boost",
-        [
-            Dependency(
-                "398F6BEC057C4FE4B724153DF4EB8AE4",
-                "Common_cpp_Helpers",
-                "Standard",
-                "https://github.com/davidbrownell/Common_cpp_Helpers.git",
-            ),
-        ],
-    )
-
-    d["no_helpers"] = Configuration(
-        "Boost repository common to specific versions of boost (without a dependency on Common_cpp_Helpers)",
         [
             Dependency(
                 "0EAA1DCF22804F90AD9F5A3B85A5D706",
                 "Common_Environment",
                 "python36",
-                "https://github.com/davidbrownell/Common_Environment_v3.git"
+                "https://github.com/davidbrownell/Common_Environemnt_v3.git",
             ),
         ],
     )
-
-    return d
 
 
 # ----------------------------------------------------------------------
