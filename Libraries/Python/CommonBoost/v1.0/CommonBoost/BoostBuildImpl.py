@@ -53,7 +53,11 @@ def CreateBuild(boost_root, is_standard_configuration):
             suffix="\n",
         ) as dm:
             if is_standard_configuration:
-                dm.stream.write("This build is not active with the 'Standard' configuration.\n")
+                dm.stream.write("This build is not active with the 'standard' configuration.\n")
+                return dm.result
+
+            if os.getenv("DEVELOPMENT_ENVIRONMENT_CPP_CLANG_AS_PROXY") == "1":
+                dm.stream.write("The build is not active when clang is used as a proxy; build with the native toolset instead.\n")
                 return dm.result
 
             # Build b2 (if necessary)
@@ -82,7 +86,17 @@ def CreateBuild(boost_root, is_standard_configuration):
                                     build_dm.stream.write(output)
                                     return build_dm.result
 
-                                command_line = "./{}".format(bootstrap_name)
+                                compiler_name = os.getenv("DEVELOPMENT_ENVIRONMENT_CPP_COMPILER_NAME").lower()
+
+                                if "clang" in compiler_name:
+                                    toolset = "clang"
+                                else:
+                                    build_dm.stream.write("ERROR: '{}' is not a recognized compiler.\n".format(compiler_name))
+                                    build_dm.result = -1
+
+                                    return build_dm.result
+
+                                command_line = "./{} --with-toolset={}".format(bootstrap_name, toolset)
 
                             build_dm.result, output = Process.Execute(command_line)
                             if build_dm.result != 0:
@@ -98,10 +112,13 @@ def CreateBuild(boost_root, is_standard_configuration):
                 architecture = os.getenv("DEVELOPMENT_ENVIRONMENT_CPP_ARCHITECTURE")
 
                 with CallOnExit(lambda: os.chdir(prev_dir)):
-                    command_line = "b2 --build-type=complete --build-dir=build/{architecture} stage address-model={architecture} {libs}".format(
+                    command_line = "b2 --build-type=complete --layout=versioned --build-dir=build/{architecture} stage address-model={architecture} {libs}".format(
                         architecture="64" if architecture == "x64" else "32",
                         libs=" ".join(["--with-{}".format(lib_name) for lib_name in boost_libs]),
                     )
+
+                    if CurrentShell.CategoryName != "Windows":
+                        command_line = "./{}".format(command_line)
 
                     build_dm.result = Process.Execute(command_line, build_dm.stream)
                     if build_dm.result != 0:
