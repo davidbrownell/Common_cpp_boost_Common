@@ -74,25 +74,13 @@ def CreateBuild(boost_root, is_standard_configuration):
 
                         with CallOnExit(lambda: os.chdir(prev_dir)):
                             if CurrentShell.CategoryName == "Windows":
-                                command_line = "bootstrap.bat"
+                                bootstrap_name = "bootstrap.bat"
+                                command_line = bootstrap_name
 
                             else:
                                 bootstrap_name = "bootstrap.sh"
 
-                                for filename in [
-                                    bootstrap_name,
-                                    "tools/build/bootstrap.sh",
-                                    "tools/build/src/engine/build.sh",
-                                ]:
-                                    assert os.path.isfile(filename), filename
-
-                                    build_dm.result, output = Process.Execute(
-                                        'chmod u+x "{}"'.format(filename),
-                                    )
-                                    if build_dm.result != 0:
-                                        build_dm.stream.write(output)
-                                        return build_dm.result
-
+                                # Manually set the toolset
                                 compiler_name = os.getenv("DEVELOPMENT_ENVIRONMENT_CPP_COMPILER_NAME").lower()
 
                                 if "clang" in compiler_name:
@@ -104,6 +92,15 @@ def CreateBuild(boost_root, is_standard_configuration):
                                     return build_dm.result
 
                                 command_line = "./{} --with-toolset={}".format(bootstrap_name, toolset)
+
+                            for filename in [
+                                bootstrap_name,
+                                os.path.join("tools", "build", "bootstrap.sh"),
+                                os.path.join("tools", "build", "src", "engine", "build.sh"),
+                            ]:
+                                assert os.path.isfile(filename), filename
+
+                                CurrentShell.MakeFileExecutable(filename)
 
                             build_dm.result, output = Process.Execute(command_line)
                             if build_dm.result != 0:
