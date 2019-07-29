@@ -79,12 +79,15 @@ def CreateBuild(boost_root, is_standard_configuration):
                             else:
                                 bootstrap_name = "bootstrap.sh"
 
-                                build_dm.result, output = Process.Execute(
-                                    'chmod u+x "{}"'.format(bootstrap_name),
-                                )
-                                if build_dm.result != 0:
-                                    build_dm.stream.write(output)
-                                    return build_dm.result
+                                for filename in [bootstrap_name, "tools/build/bootstrap.sh"]:
+                                    assert os.path.isfile(filename), filename
+
+                                    build_dm.result, output = Process.Execute(
+                                        'chmod u+x "{}"'.format(filename),
+                                    )
+                                    if build_dm.result != 0:
+                                        build_dm.stream.write(output)
+                                        return build_dm.result
 
                                 compiler_name = os.getenv("DEVELOPMENT_ENVIRONMENT_CPP_COMPILER_NAME").lower()
 
