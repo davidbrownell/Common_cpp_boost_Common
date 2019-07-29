@@ -79,7 +79,11 @@ def CreateBuild(boost_root, is_standard_configuration):
                             else:
                                 bootstrap_name = "bootstrap.sh"
 
-                                for filename in [bootstrap_name, "tools/build/bootstrap.sh"]:
+                                for filename in [
+                                    bootstrap_name,
+                                    "tools/build/bootstrap.sh",
+                                    "tools/build/src/engine/build.sh",
+                                ]:
                                     assert os.path.isfile(filename), filename
 
                                     build_dm.result, output = Process.Execute(
