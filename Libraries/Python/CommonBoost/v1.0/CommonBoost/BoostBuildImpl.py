@@ -118,7 +118,10 @@ def CreateBuild(boost_root, is_standard_configuration):
                     )
 
                     if CurrentShell.CategoryName != "Windows":
-                        command_line = "./{}".format(command_line)
+                        # TODO: Enable ASLR
+                        #   command_line = './{} variant=release cxxflags="-fPIC -fpie" linkflags="-pie"'.format(command_line)
+
+                        command_line = './{} '.format(command_line)
 
                     build_dm.result = Process.Execute(command_line, build_dm.stream)
                     if build_dm.result != 0:
