@@ -56,10 +56,6 @@ def CreateBuild(boost_root, is_standard_configuration):
                 dm.stream.write("This build is not active with the 'standard' configuration.\n")
                 return dm.result
 
-            if os.getenv("DEVELOPMENT_ENVIRONMENT_CPP_CLANG_AS_PROXY") == "1":
-                dm.stream.write("The build is not active when clang is used as a proxy; build with the native toolset instead.\n")
-                return dm.result
-
             # Build b2 (if necessary)
             dm.stream.write("Checking for 'b2'...")
             with dm.stream.DoneManager(
