@@ -1,5 +1,12 @@
 # ----------------------------------------------------------------------
 # |  Define Boost (Note that this relies on variables set in CppCommon)
+
+option(
+    BoostCommon_HEADER_ONLY
+    "If `ON`, Boost libraries are not required to exist."
+    "OFF"
+)
+
 foreach(_env_var_name IN ITEMS
     DEVELOPMENT_ENVIRONMENT_BOOST_VERSION
     DEVELOPMENT_ENVIRONMENT_BOOST_VERSION_SHORT
@@ -44,11 +51,25 @@ if(DEFINED MSVC_VERSION)
     endif()
 endif()
 
-find_package(Boost
-    $ENV{DEVELOPMENT_ENVIRONMENT_BOOST_VERSION}
-    REQUIRED
-    COMPONENTS
-        iostreams
-        regex
-        serialization
+set(_components
+    iostreams
+    regex
+    serialization
 )
+
+if(BoostCommon_HEADER_ONLY)
+    find_package(Boost
+        $ENV{DEVELOPMENT_ENVIRONMENT_BOOST_VERSION}
+        COMPONENTS
+            ${_components}
+    )
+
+else()
+    find_package(Boost
+        $ENV{DEVELOPMENT_ENVIRONMENT_BOOST_VERSION}
+        REQUIRED
+        COMPONENTS
+            ${_components}
+    )
+
+endif()
